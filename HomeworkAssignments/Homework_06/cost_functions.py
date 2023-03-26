@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn.metrics import confusion_matrix
 
+#returns cost (used for scoring)
 def cost_function(y_true, y_pred):
     
     '''
@@ -10,7 +11,7 @@ def cost_function(y_true, y_pred):
     y_pred: likelihoods from the model   
     '''
     
-    ## Defining cutoff values in a data-frame
+    #defining cutoff values in a data-frame
     results = pd.DataFrame({'cutoffs': np.round(np.linspace(0.05, 0.95, num = 40, endpoint = True), 2)})
     results['cost'] = np.nan
     
@@ -28,8 +29,14 @@ def cost_function(y_true, y_pred):
     
     return results['cost'][0]
 
-
-def cost_function_cutoff(y_true, y_pred):
+#returns cost AND cutoff
+def cost_cutoff_function(y_true, y_pred):
+    
+    '''
+    This a customize scoring function that takes two arguments:
+    y_true: true labels
+    y_pred: likelihoods from the model   
+    '''
     
     #defining cutoff values in a data-frame
     results = pd.DataFrame({'cutoffs': np.round(np.linspace(0.05, 0.95, num = 40, endpoint = True), 2)})
@@ -46,6 +53,5 @@ def cost_function_cutoff(y_true, y_pred):
         
     #sorting results 
     results = results.sort_values(by = 'cost', ascending = False).reset_index(drop = True)
-    print("Score: ", results['cutoffs'])   
     
-    return results['cutoffs'][0]
+    return [results['cost'][0], results['cutoffs'][0]]
